@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Register | QuizNest</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: system-ui, 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #87CEEB, #FFE4B5);
+            transition: background 0.3s;
+            position: relative;
+        }
+        body.dark {
+            background: linear-gradient(135deg, #0a0a2a, #1a1a3e);
+        }
+        .sun, .cloud, .red-bird { display: block; }
+        .moon, .stars-container, .galaxy, .shooting-star { display: none; }
+        body.dark .sun, body.dark .cloud, body.dark .red-bird { display: none; }
+        body.dark .moon, body.dark .stars-container, body.dark .galaxy, body.dark .shooting-star { display: block; }
+        .sun { position: fixed; top: 50px; right: 50px; width: 80px; height: 80px; background: radial-gradient(circle, #FFD700, #FFA500); border-radius: 50%; box-shadow: 0 0 50px rgba(255,165,0,0.8); z-index: 5; pointer-events: none; animation: sunGlow 2s infinite alternate; }
+        @keyframes sunGlow { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
+        .cloud { position: fixed; background: white; z-index: 5; pointer-events: none; border-radius: 100px; }
+        .cloud1 { width: 140px; height: 90px; top: 80px; left: -160px; animation: moveCloud1 25s linear infinite; }
+        .cloud1::before, .cloud1::after { content: ''; position: absolute; background: white; border-radius: 50%; }
+        .cloud1::before { width: 60px; height: 60px; top: -30px; left: 20px; }
+        .cloud1::after { width: 50px; height: 50px; top: -20px; left: 70px; }
+        .cloud2 { width: 180px; height: 110px; top: 200px; left: -220px; animation: moveCloud2 35s linear infinite; opacity: 0.8; }
+        .cloud2::before { width: 80px; height: 80px; top: -40px; left: 30px; }
+        .cloud2::after { width: 65px; height: 65px; top: -30px; left: 100px; }
+        .cloud3 { width: 110px; height: 70px; top: 350px; left: -130px; animation: moveCloud3 20s linear infinite; opacity: 0.7; }
+        .cloud3::before { width: 50px; height: 50px; top: -25px; left: 15px; }
+        .cloud3::after { width: 40px; height: 40px; top: -15px; left: 60px; }
+        .cloud4 { width: 160px; height: 95px; top: 480px; left: -190px; animation: moveCloud4 30s linear infinite; opacity: 0.6; }
+        .cloud4::before { width: 70px; height: 70px; top: -35px; left: 25px; }
+        .cloud4::after { width: 55px; height: 55px; top: -25px; left: 90px; }
+        @keyframes moveCloud1 { 100% { left: 100%; } }
+        @keyframes moveCloud2 { 100% { left: 110%; } }
+        @keyframes moveCloud3 { 100% { left: 100%; } }
+        @keyframes moveCloud4 { 100% { left: 105%; } }
+        .red-bird { position: fixed; font-size: 28px; z-index: 5; pointer-events: none; animation: flyBird 12s linear infinite; }
+        @keyframes flyBird { 0% { left: -60px; top: 150px; } 25% { top: 130px; } 50% { top: 170px; } 75% { top: 140px; } 100% { left: 100%; top: 160px; } }
+        .moon { position: fixed; top: 60px; right: 60px; width: 70px; height: 70px; background: radial-gradient(circle, #f5f5dc, #e6e6a3); border-radius: 50%; box-shadow: 0 0 40px rgba(255,255,200,0.6); z-index: 5; pointer-events: none; animation: moonGlow 3s infinite alternate; }
+        @keyframes moonGlow { 0% { box-shadow: 0 0 20px rgba(255,255,200,0.4); } 100% { box-shadow: 0 0 60px rgba(255,255,200,0.9); } }
+        .stars-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 3; overflow: hidden; }
+        .star { position: absolute; background: white; border-radius: 50%; animation: twinkle 2s infinite alternate; }
+        @keyframes twinkle { 0% { opacity: 0.3; transform: scale(1); } 100% { opacity: 1; transform: scale(1.3); } }
+        .shooting-star { position: absolute; width: 100px; height: 2px; background: linear-gradient(90deg, white, rgba(255,255,255,0.8), transparent); border-radius: 50%; animation: shootStar 3s linear infinite; }
+        @keyframes shootStar { 0% { transform: translateX(0) translateY(0) rotate(35deg); opacity: 0; width: 0px; } 5% { opacity: 1; width: 100px; } 20% { transform: translateX(-300px) translateY(200px) rotate(35deg); opacity: 0; width: 0px; } 100% { transform: translateX(-300px) translateY(200px) rotate(35deg); opacity: 0; width: 0px; } }
+        .galaxy { position: fixed; top: 50%; left: 50%; width: 400px; height: 400px; transform: translate(-50%, -50%); background: radial-gradient(ellipse, rgba(100,50,150,0.2), rgba(50,20,100,0.05), transparent); border-radius: 50%; pointer-events: none; z-index: 2; animation: galaxySpin 25s linear infinite; }
+        @keyframes galaxySpin { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 30px;
+            width: 400px;
+            max-width: 90%;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            text-align: center;
+            z-index: 10;
+            position: relative;
+        }
+        body.dark .card {
+            background: rgba(30, 36, 54, 0.95);
+            color: white;
+        }
+        h2 {
+            color: #f97316;
+            margin-bottom: 10px;
+        }
+        .tagline {
+            color: #555;
+            margin-bottom: 20px;
+        }
+        body.dark .tagline {
+            color: #ccc;
+        }
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #333;
+        }
+        body.dark .input-group label {
+            color: #ddd;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 40px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+        }
+        body.dark .input-group input, body.dark .input-group select {
+            background: #1e293b;
+            border-color: #445566;
+            color: white;
+        }
+        button {
+            background: #f97316;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 40px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #e25c0c;
+        }
+        .login-link {
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+        .login-link a {
+            color: #f97316;
+            text-decoration: none;
+        }
+        .back-link {
+            margin-top: 10px;
+            font-size: 0.85rem;
+        }
+        .error-msg, .success-msg {
+            margin-top: 10px;
+            font-size: 0.85rem;
+        }
+        .error-msg { color: #ef4444; }
+        .success-msg { color: #10b981; }
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.9);
+            border: none;
+            border-radius: 50px;
+            padding: 8px 16px;
+            cursor: pointer;
+            z-index: 100;
+            width: auto;
+        }
+        body.dark .theme-toggle {
+            background: #2a3348;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="sun"></div>
+    <div class="cloud cloud1"></div>
+    <div class="cloud cloud2"></div>
+    <div class="cloud cloud3"></div>
+    <div class="cloud cloud4"></div>
+    <div class="red-bird">🐦</div>
+    <div class="moon"></div>
+    <div class="stars-container" id="starsContainer"></div>
+    <div class="galaxy"></div>
+    <button class="theme-toggle" id="themeToggle">🌙 Dark</button>
+
+    <div class="card">
+        <h2>📚 QuizNest</h2>
+        <div class="tagline">Create Account</div>
+        <form id="registerForm">
+            <div class="input-group">
+                <label>Username</label>
+                <input type="text" id="regUsername" placeholder="Choose a username" required>
+            </div>
+            <div class="input-group">
+                <label>Email</label>
+                <input type="email" id="regEmail" placeholder="your@email.com" required>
+            </div>
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" id="regPassword" placeholder="Create a password" required>
+            </div>
+            <div class="input-group">
+                <label>I want to:</label>
+                <select id="regRole">
+                    <option value="taker">📖 Take Quizzes (Quiz Taker)</option>
+                    <option value="creator">✏️ Create Quizzes (Quiz Creator)</option>
+                </select>
+            </div>
+            <button type="submit">Register →</button>
+            <div id="regError" class="error-msg"></div>
+            <div id="regSuccess" class="success-msg"></div>
+        </form>
+        <div class="login-link">Already have an account? <a href="login.html">Login here</a></div>
+        <div class="back-link"><a href="index.html">← Back to Home</a></div>
+    </div>
+
+    <script>
+        function generateStars() {
+            const container = document.getElementById('starsContainer');
+            if (!container) return;
+            for (let i = 0; i < 120; i++) {
+                let s = document.createElement('div');
+                s.className = 'star';
+                s.style.left = Math.random() * 100 + '%';
+                s.style.top = Math.random() * 100 + '%';
+                s.style.width = (Math.random() * 3 + 1) + 'px';
+                s.style.height = s.style.width;
+                s.style.animationDelay = (Math.random() * 5) + 's';
+                container.appendChild(s);
+            }
+        }
+        function generateShootingStars() {
+            const container = document.getElementById('starsContainer');
+            if (!container) return;
+            for (let i = 0; i < 8; i++) {
+                let s = document.createElement('div');
+                s.className = 'shooting-star';
+                s.style.top = (Math.random() * 40) + '%';
+                s.style.left = (Math.random() * 60 + 40) + '%';
+                s.style.animationDelay = (Math.random() * 8) + 's';
+                container.appendChild(s);
+            }
+        }
+        generateStars();
+        generateShootingStars();
+
+        const themeToggle = document.getElementById("themeToggle");
+        themeToggle.addEventListener("click", () => {
+            document.body.classList.toggle("dark");
+            themeToggle.textContent = document.body.classList.contains("dark") ? "☀️ Light" : "🌙 Dark";
+        });
+
+        document.getElementById("registerForm").addEventListener("submit", (e) => {
+            e.preventDefault();
+            const username = document.getElementById("regUsername").value.trim();
+            const email = document.getElementById("regEmail").value.trim();
+            const password = document.getElementById("regPassword").value;
+            const role = document.getElementById("regRole").value;
+            if (!username || !email || !password) {
+                document.getElementById("regError").innerText = "Please fill all fields";
+                return;
+            }
+            let users = JSON.parse(localStorage.getItem("quiz_users")) || [];
+            if (users.find(u => u.username === username)) {
+                document.getElementById("regError").innerText = "Username already exists";
+                return;
+            }
+            users.push({ username, email, password, role });
+            localStorage.setItem("quiz_users", JSON.stringify(users));
+            document.getElementById("regSuccess").innerText = "Registration successful! Redirecting to login...";
+            setTimeout(() => {
+                window.location.href = "login.html";
+            }, 1500);
+        });
+    </script>
+</body>
+</html>

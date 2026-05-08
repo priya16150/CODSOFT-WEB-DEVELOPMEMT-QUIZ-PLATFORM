@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>QuizNest | Create & Take Quizzes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --text-primary: #1a2a3a;
+            --text-secondary: #445566;
+            --card-bg: rgba(255, 255, 255, 0.92);
+            --border-color: rgba(255, 255, 255, 0.3);
+            --accent: #f97316;
+            --accent-dark: #e25c0c;
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            --header-bg: rgba(255, 255, 255, 0.85);
+            --btn-bg: #ffffff;
+            --btn-text: #1a2a3a;
+        }
+
+        body.dark {
+            --text-primary: #eef2ff;
+            --text-secondary: #a0afc5;
+            --card-bg: rgba(30, 36, 54, 0.92);
+            --border-color: rgba(255, 255, 255, 0.15);
+            --header-bg: rgba(18, 24, 38, 0.85);
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            --btn-bg: #2a3348;
+            --btn-text: #eef2ff;
+        }
+
+        body {
+            font-family: system-ui, 'Segoe UI', 'Poppins', sans-serif;
+            color: var(--text-primary);
+            transition: color 0.3s ease;
+            scroll-behavior: smooth;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body:not(.dark) {
+            background: linear-gradient(135deg, #87CEEB 0%, #FFE4B5 40%, #FFDAB9 100%);
+            position: relative;
+        }
+
+        body:not(.dark) .sun {
+            position: fixed;
+            top: 50px;
+            right: 50px;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, #FFD700, #FFA500);
+            border-radius: 50%;
+            box-shadow: 0 0 50px rgba(255, 165, 0, 0.8);
+            z-index: 5;
+            pointer-events: none;
+            animation: sunGlow 2s ease-in-out infinite alternate, sunRotate 10s linear infinite;
+        }
+
+        @keyframes sunGlow {
+            0% { transform: scale(1); box-shadow: 0 0 30px rgba(255, 165, 0, 0.6); }
+            100% { transform: scale(1.1); box-shadow: 0 0 70px rgba(255, 165, 0, 1); }
+        }
+
+        @keyframes sunRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        body:not(.dark) .cloud {
+            position: fixed;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        body:not(.dark) .cloud1 {
+            width: 140px;
+            height: 90px;
+            top: 80px;
+            left: -160px;
+            animation: moveCloud1 25s linear infinite;
+            position: fixed;
+            background: white;
+            border-radius: 100px;
+        }
+        body:not(.dark) .cloud1::before {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            top: -30px;
+            left: 20px;
+        }
+        body:not(.dark) .cloud1::after {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            top: -20px;
+            left: 70px;
+        }
+
+        body:not(.dark) .cloud2 {
+            width: 180px;
+            height: 110px;
+            top: 200px;
+            left: -220px;
+            animation: moveCloud2 35s linear infinite;
+            opacity: 0.8;
+            position: fixed;
+            background: white;
+            border-radius: 100px;
+        }
+        body:not(.dark) .cloud2::before {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            top: -40px;
+            left: 30px;
+        }
+        body:not(.dark) .cloud2::after {
+            content: '';
+            position: absolute;
+            width: 65px;
+            height: 65px;
+            background: white;
+            border-radius: 50%;
+            top: -30px;
+            left: 100px;
+        }
+
+        body:not(.dark) .cloud3 {
+            width: 110px;
+            height: 70px;
+            top: 350px;
+            left: -130px;
+            animation: moveCloud3 20s linear infinite;
+            opacity: 0.7;
+            position: fixed;
+            background: white;
+            border-radius: 100px;
+        }
+        body:not(.dark) .cloud3::before {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            top: -25px;
+            left: 15px;
+        }
+        body:not(.dark) .cloud3::after {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            top: -15px;
+            left: 60px;
+        }
+
+        body:not(.dark) .cloud4 {
+            width: 160px;
+            height: 95px;
+            top: 480px;
+            left: -190px;
+            animation: moveCloud4 30s linear infinite;
+            opacity: 0.6;
+            position: fixed;
+            background: white;
+            border-radius: 100px;
+        }
+        body:not(.dark) .cloud4::before {
+            content: '';
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            background: white;
+            border-radius: 50%;
+            top: -35px;
+            left: 25px;
+        }
+        body:not(.dark) .cloud4::after {
+            content: '';
+            position: absolute;
+            width: 55px;
+            height: 55px;
+            background: white;
+            border-radius: 50%;
+            top: -25px;
+            left: 90px;
+        }
+
+        @keyframes moveCloud1 {
+            0% { left: -160px; }
+            100% { left: 100%; }
+        }
+        @keyframes moveCloud2 {
+            0% { left: -220px; }
+            100% { left: 110%; }
+        }
+        @keyframes moveCloud3 {
+            0% { left: -130px; }
+            100% { left: 100%; }
+        }
+        @keyframes moveCloud4 {
+            0% { left: -190px; }
+            100% { left: 105%; }
+        }
+
+        body:not(.dark) .red-bird {
+            position: fixed;
+            font-size: 28px;
+            z-index: 5;
+            pointer-events: none;
+            animation: flyBird 12s linear infinite;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
+        }
+
+        @keyframes flyBird {
+            0% { left: -60px; top: 150px; transform: translateY(0); }
+            25% { top: 130px; }
+            50% { top: 170px; }
+            75% { top: 140px; }
+            100% { left: 100%; top: 160px; }
+        }
+
+        body.dark {
+            background: linear-gradient(135deg, #0a0a2a 0%, #1a1a3e 50%, #0d0d2b 100%);
+        }
+
+        body.dark .moon {
+            position: fixed;
+            top: 60px;
+            right: 60px;
+            width: 70px;
+            height: 70px;
+            background: radial-gradient(circle, #f5f5dc, #e6e6a3);
+            border-radius: 50%;
+            box-shadow: 0 0 40px rgba(255, 255, 200, 0.6);
+            z-index: 5;
+            pointer-events: none;
+            animation: moonGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes moonGlow {
+            0% { box-shadow: 0 0 20px rgba(255, 255, 200, 0.4); }
+            100% { box-shadow: 0 0 60px rgba(255, 255, 200, 0.9); }
+        }
+
+        body.dark .stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 3;
+            overflow: hidden;
+        }
+
+        body.dark .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.3; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.3); }
+        }
+
+        body.dark .shooting-star {
+            position: absolute;
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, white, rgba(255,255,255,0.8), transparent);
+            border-radius: 50%;
+            animation: shootStar 3s linear infinite;
+            filter: drop-shadow(0 0 4px white);
+        }
+
+        @keyframes shootStar {
+            0% {
+                transform: translateX(0) translateY(0) rotate(35deg);
+                opacity: 0;
+                width: 0px;
+            }
+            5% {
+                opacity: 1;
+                width: 100px;
+            }
+            20% {
+                transform: translateX(-300px) translateY(200px) rotate(35deg);
+                opacity: 0;
+                width: 0px;
+            }
+            100% {
+                transform: translateX(-300px) translateY(200px) rotate(35deg);
+                opacity: 0;
+                width: 0px;
+            }
+        }
+
+        body.dark .galaxy {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 400px;
+            height: 400px;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(ellipse, rgba(100, 50, 150, 0.2), rgba(50, 20, 100, 0.05), transparent);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 2;
+            animation: galaxySpin 25s linear infinite;
+        }
+
+        @keyframes galaxySpin {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 32px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .header {
+            background: var(--header-bg);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 0;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent), #2A5298);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            cursor: pointer;
+        }
+
+        .theme-toggle {
+            background: var(--btn-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: 0.2s;
+            color: var(--btn-text);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+        }
+
+        .hero {
+            padding: 80px 0 60px;
+        }
+
+        .hero-grid {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .hero-content {
+            flex: 1.2;
+        }
+
+        .hero-badge {
+            background: var(--accent);
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 20px;
+            animation: badgePulse 2s infinite;
+        }
+
+        @keyframes badgePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .typed-text {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            min-height: 160px;
+        }
+
+        .typed-text .cursor {
+            display: inline-block;
+            width: 3px;
+            background: var(--accent);
+            animation: blink 0.7s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .hero-desc {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            border: none;
+            padding: 12px 28px;
+            border-radius: 40px;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1.5px solid var(--border-color);
+            padding: 12px 28px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+
+        .statistics {
+            padding: 60px 0;
+        }
+
+        .statistics-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 40px;
+            text-align: center;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            padding: 32px 48px;
+            border-radius: 32px;
+            border: 1px solid var(--border-color);
+            min-width: 180px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow);
+            border-color: var(--accent);
+        }
+
+        .stat-card h3 {
+            font-size: 3rem;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+
+        .image-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            border-radius: 48px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s;
+        }
+
+        .image-card:hover {
+            transform: scale(1.02);
+        }
+
+        .shake-glow-text {
+            background: linear-gradient(135deg, var(--accent), #2A5298);
+            border-radius: 32px;
+            padding: 60px 20px;
+            color: white;
+            font-size: 3rem;
+            font-weight: bold;
+            text-align: center;
+            display: inline-block;
+            width: 100%;
+            animation: gentleShake 6s ease-in-out infinite, gentleGlow 2s ease-in-out infinite alternate;
+            cursor: pointer;
+            letter-spacing: 2px;
+        }
+
+        @keyframes gentleShake {
+            0%, 100% { transform: translate(0px, 0px) rotate(0deg); }
+            25% { transform: translate(-2px, -1px) rotate(-0.5deg); }
+            50% { transform: translate(2px, 1px) rotate(0.5deg); }
+            75% { transform: translate(-1px, 1px) rotate(-0.3deg); }
+        }
+
+        @keyframes gentleGlow {
+            0% {
+                text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+                box-shadow: 0 0 10px rgba(249, 115, 22, 0.2);
+            }
+            100% {
+                text-shadow: 0 0 15px rgba(255, 255, 255, 0.6), 0 0 20px rgba(255, 165, 0, 0.4);
+                box-shadow: 0 0 25px rgba(249, 115, 22, 0.5);
+            }
+        }
+
+        .features {
+            padding: 70px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 56px;
+        }
+
+        .features-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 32px;
+            justify-content: center;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            border-radius: 28px;
+            padding: 32px 24px;
+            flex: 1;
+            min-width: 240px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow);
+            border-color: var(--accent);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            display: inline-block;
+            animation: iconBounce 2s ease-in-out infinite;
+        }
+
+        @keyframes iconBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .contact {
+            padding: 70px 0;
+        }
+
+        .contact-form {
+            max-width: 500px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            padding: 40px;
+            border-radius: 32px;
+            border: 1px solid var(--border-color);
+        }
+
+        .contact-form input {
+            width: 100%;
+            padding: 14px;
+            margin: 12px 0;
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-primary);
+        }
+
+        .footer {
+            background: var(--header-bg);
+            backdrop-filter: blur(8px);
+            padding: 48px 0 28px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--accent);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.3s;
+            z-index: 999;
+            border: none;
+            font-size: 1.5rem;
+        }
+
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .form-message {
+            margin-top: 16px;
+            text-align: center;
+            padding: 10px;
+            border-radius: 24px;
+        }
+        .success { background: #10b98120; color: #10b981; }
+        .error { background: #ef444420; color: #ef4444; }
+
+        .info-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 32px;
+            padding: 32px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .close-modal {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 40px;
+            margin-top: 20px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .typed-text { font-size: 2rem; }
+            .shake-glow-text { font-size: 2rem; padding: 40px 15px; }
+            .container { padding: 0 20px; }
+        }
+
+        body:not(.dark) .moon,
+        body:not(.dark) .stars-container,
+        body:not(.dark) .galaxy,
+        body:not(.dark) .shooting-star { display: none; }
+        
+        body.dark .sun,
+        body.dark .cloud,
+        body.dark .red-bird { display: none; }
+        
+        body.dark .shooting-star { display: block; }
+        body:not(.dark) .shooting-star { display: none; }
+    </style>
+</head>
+<body>
+    <div class="sun"></div>
+    <div class="cloud cloud1"></div>
+    <div class="cloud cloud2"></div>
+    <div class="cloud cloud3"></div>
+    <div class="cloud cloud4"></div>
+    <div class="red-bird">🐦</div>
+
+    <div class="moon"></div>
+    <div class="stars-container" id="starsContainer"></div>
+    <div class="galaxy"></div>
+
+    <header class="header">
+        <div class="container">
+            <div class="nav">
+                <div class="logo">📚 QuizNest</div>
+                <button class="theme-toggle" id="themeToggle">🌙 Dark</button>
+            </div>
+        </div>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-grid">
+                <div class="hero-content">
+                    <div class="typed-text" id="typedText"></div>
+                    <div class="btn-group">
+                        <a href="login.html" class="btn-primary">🚀 Get Started</a>
+                        <button class="btn-secondary" id="exploreFeaturesBtn">Explore Features →</button>
+                    </div>
+                </div>
+                <div class="hero-content">
+                    <div class="image-card">
+                        <div class="shake-glow-text">
+                            HELLO EVERYONE 👋
+                        </div>
+                        <h3>Build Something Amazing</h3>
+                        <p>Create quizzes, challenge friends, and track knowledge – all in one place.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="statistics" class="statistics">
+        <div class="container">
+            <h2 class="section-title">📊 QuizNest by Numbers</h2>
+            <div class="statistics-grid">
+                <div class="stat-card" id="quizzesCard">
+                    <h3>150+</h3>
+                    <p>📝 Quizzes Created</p>
+                </div>
+                <div class="stat-card" id="usersCard">
+                    <h3>2,500+</h3>
+                    <p>👥 Active Users</p>
+                </div>
+                <div class="stat-card" id="successCard">
+                    <h3>96%</h3>
+                    <p>⭐ Success Rate</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">✨ Why Choose QuizNest?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📝</div>
+                    <h3>Easy Creation</h3>
+                    <p>Add questions, multiple-choice answers, and correct answers in seconds.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Instant Results</h3>
+                    <p>Get immediate feedback on your score and see correct answers.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">👥</div>
+                    <h3>User Accounts</h3>
+                    <p>Register and login to save your quizzes and track progress.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Mobile Friendly</h3>
+                    <p>Responsive design works perfectly on any device.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">📬 Get in Touch</h2>
+            <div class="contact-form">
+                <input type="text" id="userName" placeholder="Your Name" required>
+                <input type="email" id="userEmail" placeholder="Your Email" required>
+                <button class="btn-primary" id="submitForm" style="width: 100%;">Send Message ✨</button>
+                <div id="formFeedback" class="form-message"></div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 QuizNest | Galaxy Edition – Connecting curious minds across the universe</p>
+        </div>
+    </footer>
+
+    <button class="back-to-top" id="backToTop">↑</button>
+
+   
+    <div id="infoModal" class="info-modal">
+        <div class="modal-content" id="modalContent"></div>
+    </div>
+
+    <script>
+        
+        function generateStars() {
+            const container = document.getElementById('starsContainer');
+            for (let i = 0; i < 120; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = (Math.random() * 3 + 1) + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = (Math.random() * 5) + 's';
+                star.style.animationDuration = (Math.random() * 2 + 1) + 's';
+                container.appendChild(star);
+            }
+        }
+
+        function generateShootingStars() {
+            const container = document.getElementById('starsContainer');
+            for (let i = 0; i < 8; i++) {
+                const star = document.createElement('div');
+                star.className = 'shooting-star';
+                star.style.top = (Math.random() * 40) + '%';
+                star.style.left = (Math.random() * 60 + 40) + '%';
+                star.style.animationDelay = (Math.random() * 8) + 's';
+                star.style.animationDuration = (Math.random() * 2 + 2.5) + 's';
+                container.appendChild(star);
+            }
+        }
+
+        generateStars();
+        generateShootingStars();
+
+        
+        const texts = ["Create Your Own Quiz", "Challenge Your Friends", "Learn & Have Fun", "Track Your Progress"];
+        let textIndex = 0, charIndex = 0, isDeleting = false;
+        const typedElement = document.getElementById("typedText");
+
+        function typeEffect() {
+            const currentText = texts[textIndex];
+            if (isDeleting) {
+                typedElement.innerHTML = currentText.substring(0, charIndex - 1) + '<span class="cursor">|</span>';
+                charIndex--;
+                if (charIndex === 0) { isDeleting = false; textIndex = (textIndex + 1) % texts.length; }
+            } else {
+                typedElement.innerHTML = currentText.substring(0, charIndex + 1) + '<span class="cursor">|</span>';
+                charIndex++;
+                if (charIndex === currentText.length) { isDeleting = true; }
+            }
+            setTimeout(typeEffect, isDeleting ? 80 : 150);
+        }
+        typeEffect();
+
+       
+        const themeToggle = document.getElementById("themeToggle");
+        themeToggle.addEventListener("click", () => {
+            document.body.classList.toggle("dark");
+            const isDark = document.body.classList.contains("dark");
+            themeToggle.textContent = isDark ? "☀️ Light" : "🌙 Dark";
+        });
+
+        
+        const backBtn = document.getElementById("backToTop");
+        window.addEventListener("scroll", () => backBtn.classList.toggle("show", window.scrollY > 300));
+        backBtn.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+
+        document.getElementById("exploreFeaturesBtn").addEventListener("click", () => {
+            document.getElementById("features").scrollIntoView({ behavior: "smooth" });
+        });
+
+        const submitBtn = document.getElementById("submitForm");
+        const feedback = document.getElementById("formFeedback");
+        submitBtn.addEventListener("click", () => {
+            const name = document.getElementById("userName").value.trim();
+            const email = document.getElementById("userEmail").value.trim();
+            if (!name || !email) {
+                feedback.innerHTML = "❌ Please fill both fields!";
+                feedback.className = "form-message error";
+            } else if (!email.includes("@") || !email.includes(".")) {
+                feedback.innerHTML = "❌ Enter a valid email address!";
+                feedback.className = "form-message error";
+            } else {
+                feedback.innerHTML = "✅ Thank you " + name + "! We'll get back to you soon! 🎉";
+                feedback.className = "form-message success";
+                document.getElementById("userName").value = "";
+                document.getElementById("userEmail").value = "";
+                setTimeout(() => feedback.innerHTML = "", 3000);
+            }
+        });
+
+        const modal = document.getElementById("infoModal");
+        const modalContent = document.getElementById("modalContent");
+
+        function showModal(title, items) {
+            let itemsHtml = '<ul style="list-style:none; padding:0;">';
+            items.forEach(item => {
+                itemsHtml += `<li style="padding:10px 0; border-bottom:1px solid var(--border-color);">${item}</li>`;
+            });
+            itemsHtml += '</ul><button class="close-modal" onclick="closeModal()">Close ✨</button>';
+            modalContent.innerHTML = `<h3 style="font-size:1.8rem; margin-bottom:20px; color:var(--accent);">${title}</h3>${itemsHtml}`;
+            modal.style.display = "flex";
+        }
+
+        window.closeModal = function() { modal.style.display = "none"; }
+        modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+
+        document.getElementById("quizzesCard").addEventListener("click", () => {
+            showModal("📝 Quizzes Created", [
+                "🎯 Over 150 quizzes created by users",
+                "📚 Topics: Sports, Science, History, Technology, and more",
+                "✨ New quizzes added every week",
+                "🏆 Top creators get featured on leaderboard"
+            ]);
+        });
+
+        document.getElementById("usersCard").addEventListener("click", () => {
+            showModal("👥 Active Users", [
+                "🌟 2,500+ registered users",
+                "🌍 Users from 30+ countries",
+                "📈 Growing 20% month over month",
+                "🤝 Join our community today!"
+            ]);
+        });
+
+        document.getElementById("successCard").addEventListener("click", () => {
+            showModal("⭐ Success Rate", [
+                "96% of users find quizzes engaging",
+                "94% would recommend QuizNest to friends",
+                "Thousands of quizzes taken daily",
+                "Average score improvement: 35%"
+            ]);
+        });
+    </script>
+</body>
+</html>

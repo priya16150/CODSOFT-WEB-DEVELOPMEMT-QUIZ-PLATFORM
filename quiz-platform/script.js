@@ -1,9 +1,7 @@
-// ---------- STORAGE KEYS ----------
 const USERS_KEY = "quiz_users";
 const QUIZZES_KEY = "quiz_quizzes";
 const SESSION_KEY = "quiz_current_user";
 
-// ---------- INITIAL DATA SEED ----------
 function initData() {
     if (!localStorage.getItem(USERS_KEY)) {
         const defaultUsers = [
@@ -34,7 +32,6 @@ function initData() {
     }
 }
 
-// ---------- AUTH HELPERS ----------
 function registerUser(username, email, password) {
     const users = JSON.parse(localStorage.getItem(USERS_KEY));
     if (users.find(u => u.username === username)) return false;
@@ -71,7 +68,6 @@ function requireAuth() {
     return true;
 }
 
-// ---------- QUIZ HELPERS ----------
 function getAllQuizzes() {
     return JSON.parse(localStorage.getItem(QUIZZES_KEY)) || [];
 }
@@ -85,10 +81,6 @@ function saveQuiz(quiz) {
 function getQuizById(id) {
     return getAllQuizzes().find(q => q.id === id);
 }
-
-// ---------- PAGE SPECIFIC LOGIC ----------
-
-// Login page
 if (document.getElementById("loginForm")) {
     document.getElementById("loginForm").addEventListener("submit", (e) => {
         e.preventDefault();
@@ -102,7 +94,6 @@ if (document.getElementById("loginForm")) {
     });
 }
 
-// Register page
 if (document.getElementById("registerForm")) {
     document.getElementById("registerForm").addEventListener("submit", (e) => {
         e.preventDefault();
@@ -118,7 +109,6 @@ if (document.getElementById("registerForm")) {
     });
 }
 
-// Dashboard: display username + logout
 if (window.location.pathname.includes("dashboard.html")) {
     if (!requireAuth()) return;
     const user = getCurrentUser();
@@ -126,7 +116,6 @@ if (window.location.pathname.includes("dashboard.html")) {
     document.getElementById("logoutBtn").addEventListener("click", logoutUser);
 }
 
-// Take Quiz: list all quizzes
 if (window.location.pathname.includes("take-quiz.html")) {
     if (!requireAuth()) return;
     const quizzes = getAllQuizzes();
@@ -144,7 +133,6 @@ if (window.location.pathname.includes("take-quiz.html")) {
                 </div>
             </div>
         `).join('');
-        // attach event listeners to start buttons
         document.querySelectorAll(".start-quiz-btn").forEach(btn => {
             btn.addEventListener("click", () => {
                 const quizId = btn.getAttribute("data-id");
@@ -157,7 +145,7 @@ if (window.location.pathname.includes("take-quiz.html")) {
     }
 }
 
-// Attempt Quiz page
+
 if (window.location.pathname.includes("attempt-quiz.html")) {
     if (!requireAuth()) return;
     const quizId = localStorage.getItem("activeQuizId");
@@ -208,7 +196,6 @@ if (window.location.pathname.includes("attempt-quiz.html")) {
                 saveProgress();
                 renderQuestion();
             } else {
-                // quiz finished: compute results and go to results page
                 let score = 0;
                 const details = [];
                 quiz.questions.forEach((q, idx) => {
@@ -245,7 +232,6 @@ if (window.location.pathname.includes("attempt-quiz.html")) {
     renderQuestion();
 }
 
-// Results page
 if (window.location.pathname.includes("results.html")) {
     if (!requireAuth()) return;
     const resultRaw = localStorage.getItem("quizResult");
@@ -274,7 +260,6 @@ if (window.location.pathname.includes("results.html")) {
     localStorage.removeItem("quizResult");
 }
 
-// Create Quiz page
 if (window.location.pathname.includes("create-quiz.html")) {
     if (!requireAuth()) return;
     let questionCounter = 0;
@@ -300,7 +285,6 @@ if (window.location.pathname.includes("create-quiz.html")) {
         questionsContainer.appendChild(block);
     }
     
-    // initial one question
     addQuestionBlock();
     
     document.getElementById("addQuestionBtn").addEventListener("click", () => addQuestionBlock());
@@ -339,7 +323,7 @@ if (window.location.pathname.includes("create-quiz.html")) {
     });
 }
 
-// helper function
+
 function escapeHtml(str) {
     if (!str) return "";
     return str.replace(/[&<>]/g, function(m) {
@@ -350,5 +334,4 @@ function escapeHtml(str) {
     });
 }
 
-// initialize data on first load
 initData();
